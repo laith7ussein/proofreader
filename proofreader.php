@@ -3,7 +3,7 @@
 /**
  * Plugin Name:       Proofreader
  * Description:       Proofread your content with a single click.
- * Version:           0.2.1
+ * Version:           0.2.4
  * Author:            Layth Hussein
  * Author URI:        https://laith7ussein.com
  * Text Domain:       proofreader
