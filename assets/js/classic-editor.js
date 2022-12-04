@@ -1,8 +1,14 @@
 
 jQuery(($) => {
 
-    const prrofreaderFn = (html) => {
-        html = html.replaceAll(/(.{50,}[^\.])/g, '$1.');
+    const prrofreaderFn = (html, dots = true) => {
+
+        if ( !html ) return '';
+
+        // if ( dots ) {
+        //     html = html.replaceAll(/(.{50,}[^\.])/g, '$1.');
+        // }
+
         html = html.replaceAll(/\.+$/g, '.');
         html = html.replaceAll(/(\s\و)\s/g, '$1');
         html = html.replaceAll(/([\،\,\.\؛\;\:\:])([a-zA-Zء-ي]+)/g, '$1 $2');
@@ -22,16 +28,18 @@ jQuery(($) => {
                 const replacement = proofreader_words[wordFull];
                 const wordsSplitted = wordFull.split('-');
                 wordsSplitted.forEach(function (word) {
+                    
                     word = word.trim();
-                    const regex = new RegExp(`([\\s\\و])${word}([\\s\\.\\,\\:\\;\\"\\(\\)\\'\\?\\!])`, 'g');
-                    html = html.replaceAll(regex, `$1${replacement}$2`)
+
+                    const regex = new RegExp(`([\\s\\و]|^)${word}([\\،\\s\\.\\,\\:\\;\\"\\(\\)\\'\\?\\!]|$)`, 'g');
+                    html = html.replaceAll(regex, `$1${replacement}$2`);
+
                 });
             });
-        } else {
-            alert('No words found');
-        }
+        } else alert('No words found');
 
         return html;
+
     }
 
     tinymce.PluginManager.add('proofreader_mce_button', function (editor, url) {
@@ -40,11 +48,6 @@ jQuery(($) => {
             onclick: function () {
 
                 const contentBody = editor.getBody();
-
-                // $(contentBody).find('div[dir="auto"]').replaceWith(function () {
-                //     return `<p>${this.innerHTML}</p>`;
-                // });
-
 
                 $(contentBody).html(
                     $(contentBody).html().replaceAll(/<br>\\*/g, "</p><p>").replaceAll('&nbsp;', '')
@@ -55,6 +58,9 @@ jQuery(($) => {
                     if ($element.text() === '' && $element.children().length === 0) {
                         $element.remove();
                     } else {
+
+                        if ( $element.find('img, a').length ) return;
+
                         $element.html(
                             prrofreaderFn(
                                 $element.html()
@@ -67,13 +73,13 @@ jQuery(($) => {
                 $('[name="post_title"]').val(
                     prrofreaderFn(
                         $('[name="post_title"]').val()
-                    )
+                    , false)
                 )
 
                 $('[name="tie_post_sub_title"]').val(
                     prrofreaderFn(
                         $('[name="tie_post_sub_title"]').val()
-                    )
+                    , false)
                 )
 
                 $(contentBody).find('p').filter(function () {
@@ -81,6 +87,7 @@ jQuery(($) => {
                 }).replaceWith(function () {
                     return `<h4>${this.innerHTML}</h4>`;
                 });
+
             },
             icon: 'proofreader-icon',
             image: 'https://img.icons8.com/pastel-glyph/512/checked--v3.png',

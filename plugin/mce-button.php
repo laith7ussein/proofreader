@@ -54,7 +54,7 @@ add_action('admin_enqueue_scripts', function () {
  */
 function custom_tinymce_plugin($plugin_array)
 {
-    $plugin_array['proofreader_mce_button'] = plugins_url('assets/js/classic-editor.js?v=0.7.0', __DIR__);
+    $plugin_array['proofreader_mce_button'] = plugins_url('assets/js/classic-editor.js?v=0.7.2', __DIR__);
     return $plugin_array;
 }
 
