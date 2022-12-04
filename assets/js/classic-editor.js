@@ -1,9 +1,13 @@
 
 jQuery(($) => {
 
+    String.prototype.replaceAt = function (index, replacement) {
+        return this.substring(0, index) + replacement + this.substring(index + replacement.length);
+    }
+
     const prrofreaderFn = (html, dots = true) => {
 
-        if ( !html ) return '';
+        if (!html) return '';
 
         // if ( dots ) {
         //     html = html.replaceAll(/(.{50,}[^\.])/g, '$1.');
@@ -28,7 +32,7 @@ jQuery(($) => {
                 const replacement = proofreader_words[wordFull];
                 const wordsSplitted = wordFull.split('-');
                 wordsSplitted.forEach(function (word) {
-                    
+
                     word = word.trim();
 
                     const regex = new RegExp(`([\\s\\و]|^)${word}([\\،\\s\\.\\,\\:\\;\\"\\(\\)\\'\\?\\!]|$)`, 'g');
@@ -37,6 +41,27 @@ jQuery(($) => {
                 });
             });
         } else alert('No words found');
+
+        // double quotes
+        if (html.length) {
+            let quotesCount = 0;
+            let newHtml = html.split('');
+            newHtml.forEach(function (char, index) {
+                if (char === '"') {
+                    quotesCount += 1;
+                    switch ( quotesCount % 2 ) {
+                        case 0:
+                            if (html[index - 1] === ' ') newHtml[index - 1] = '';
+                            if (html[index + 1] !== ' ') newHtml[index + 1] = ' '+newHtml[index + 1];
+                            break;
+                        case 1:
+                            if (html[index - 1] !== ' ') newHtml[index - 1] = newHtml[index - 1]+' ';
+                            if (html[index + 1] === ' ') newHtml[index + 1] = '';
+                    }
+                }
+            });
+            html = newHtml.join('');
+        }
 
         return html;
 
@@ -59,7 +84,7 @@ jQuery(($) => {
                         $element.remove();
                     } else {
 
-                        if ( $element.find('img, a').length ) return;
+                        if ($element.find('img, a').length) return;
 
                         $element.html(
                             prrofreaderFn(
@@ -73,13 +98,13 @@ jQuery(($) => {
                 $('[name="post_title"]').val(
                     prrofreaderFn(
                         $('[name="post_title"]').val()
-                    , false)
+                        , false)
                 )
 
                 $('[name="tie_post_sub_title"]').val(
                     prrofreaderFn(
                         $('[name="tie_post_sub_title"]').val()
-                    , false)
+                        , false)
                 )
 
                 $(contentBody).find('p').filter(function () {
