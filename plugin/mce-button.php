@@ -54,9 +54,21 @@ add_action('admin_enqueue_scripts', function () {
  */
 function custom_tinymce_plugin($plugin_array)
 {
-    $plugin_array['proofreader_mce_button'] = plugins_url('assets/js/classic-editor.js?v=0.8.0', __DIR__);
+    $plugin_array['proofreader_mce_button'] = plugins_url('assets/js/classic-editor.js?v=0.8.8', __DIR__);
     return $plugin_array;
 }
+
+/**
+ * in case the editor is not loaded.
+ * tihs happens when you open the editor using the tablet 
+ * 
+ * @since 0.2.14
+ * @param array $plugin_array
+ * @return array
+ */
+add_action('admin_enqueue_scripts', function () {
+    wp_enqueue_script('proofreader-mce-button', plugins_url('assets/js/classic-editor.js?v=0.8.8', __DIR__));
+});
 
 
 /**

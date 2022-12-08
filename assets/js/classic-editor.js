@@ -9,9 +9,9 @@ jQuery(($) => {
 
         if (!html) return '';
 
-        // if ( dots ) {
-        //     html = html.replaceAll(/(.{50,}[^\.])/g, '$1.');
-        // }
+        if ( dots ) {
+            html = html.replaceAll(/(.{50,}[^\.])/g, '$1.');
+        }
 
         html = html.replaceAll(/\.+$/g, '.');
         html = html.replaceAll(/(\s\و)\s/g, '$1');
@@ -33,9 +33,9 @@ jQuery(($) => {
                 const wordsSplitted = wordFull.split('-');
                 wordsSplitted.forEach(function (word) {
 
-                    word = word.trim();
-
-                    const regex = new RegExp(`([\\s\\و]|^)${word}([\\،\\s\\.\\,\\:\\;\\"\\(\\)\\'\\?\\!]|$)`, 'g');
+                    word = word.trim().replace(/([()])/g, '\\$1');
+                    const regex = new RegExp(`([\\s\\و]|^)${word}([\\،\\s\\.\\,\\:\\؛\\;\\"\\(\\)\\'\\?\\!]|$)`, 'g');
+                    
                     html = html.replaceAll(regex, `$1${replacement}$2`);
 
                 });
@@ -52,10 +52,11 @@ jQuery(($) => {
                     switch ( quotesCount % 2 ) {
                         case 0:
                             if (html[index - 1] === ' ') newHtml[index - 1] = '';
-                            if (html[index + 1] !== ' ') newHtml[index + 1] = ' '+newHtml[index + 1];
+                            if (html[index + 1] !== ' ' && typeof html[index + 1] !== typeof undefined && html[index + 1] !== '.' && html[index + 1] !== ',' && html[index + 1] !== '،' && html[index + 1] !== ':' && html[index + 1] !== ';') newHtml[index + 1] = ' '+newHtml[index + 1];
+                            if (html[index + 1] === ' ' && typeof html[index + 2] !== typeof undefined && (html[index + 2] === '.' || html[index + 2] === ',' || html[index + 2] === '،' || html[index + 2] === ':' || html[index + 2] === ';')) newHtml[index + 1] = '';
                             break;
                         case 1:
-                            if (html[index - 1] !== ' ') newHtml[index - 1] = newHtml[index - 1]+' ';
+                            if (typeof html[index - 1] !== typeof undefined && html[index - 1] !== ' ' && html[index - 1] !== 'و' && html[index - 1] !== 'ـ') newHtml[index - 1] = newHtml[index - 1]+' ';
                             if (html[index + 1] === ' ') newHtml[index + 1] = '';
                     }
                 }
@@ -78,9 +79,9 @@ jQuery(($) => {
                     $(contentBody).html().replaceAll(/<br>\\*/g, "</p><p>").replaceAll('&nbsp;', '')
                 );
 
-                $(contentBody).find('p, li, h1, h2, h3, h4, h5, h6').each(function (index, element) {
+                $(contentBody).find('p, li, h1, h2, h3, h4, h5, h6, strong, b, span').each(function (index, element) {
                     const $element = $(element);
-                    if ($element.text() === '' && $element.children().length === 0) {
+                    if ($element.text() === '' && $element.find('img, a, div').length === 0) {
                         $element.remove();
                     } else {
 
