@@ -33,3 +33,4 @@ add_action('plugins_loaded', function () {
 
 add_action('init', 'proofreader_load_locales');
 add_action('admin_enqueue_scripts', 'proofreader_admin_enqueue_scripts');
+

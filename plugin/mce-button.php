@@ -68,6 +68,7 @@ function custom_tinymce_plugin($plugin_array)
  */
 add_action('admin_enqueue_scripts', function () {
     wp_enqueue_script('proofreader-mce-button', plugins_url('assets/js/classic-editor.js?v=0.8.8', __DIR__));
+    wp_enqueue_style('proofreader-mce-style', plugins_url('assets/css/classic-editor.css?v=0.0.1', __DIR__));
 });
 
 

@@ -9,61 +9,72 @@ jQuery(($) => {
 
         if (!html) return '';
 
-        if ( dots ) {
-            html = html.replaceAll(/(.{50,}[^\.])/g, '$1.');
-        }
+        const x = html;
 
-        html = html.replaceAll(/\.+$/g, '.');
-        html = html.replaceAll(/(\s\و)\s/g, '$1');
-        html = html.replaceAll(/([\،\,\.\؛\;\:\:])([a-zA-Zء-ي]+)/g, '$1 $2');
-        html = html.replaceAll(/([a-zA-Zء-ي]+)\s([\،\,\.\؛\;\:\:])/g, '$1$2');
+        // if ( dots ) {
+        //     html = html.replaceAll(/(.{50,}[^\.])/g, '$1.');
+        // }
+
+        // html = html.replaceAll(/\.+$/g, '.');
+        // html = html.replaceAll(/(\s\و)\s/g, '$1');
+        // html = html.replaceAll(/([\،\,\.\؛\;\:\:])([a-zA-Zء-ي]+)/g, '$1 $2');
+
+        const m = [...html.matchAll(/([a-zA-Zء-ي]+)\s([\،\,\.\؛\;\:\:])/g)];
+        m.forEach(function (match) {
+            const matchCase = match[0];
+            html = html.replace(matchCase, `<span class="proofreader-match">${matchCase}</span>`);
+            console.log(matchCase);
+        });
+
+        // html = html.replaceAll(/([a-zA-Zء-ي]+)\s([\،\,\.\؛\;\:\:])/g, '$1$2');
 
         // pranthesis
-        html = html.replaceAll(/([ء-ي]+)\s(\))/g, '$1$2');
-        html = html.replaceAll(/([a-zA-Z]+)\s(\))/g, '$1$2');
-        html = html.replaceAll(/(\()\s([ء-ي]+)/g, '$1$2');
-        html = html.replaceAll(/(\()\s([a-zA-Z]+)/g, '$1$2');
-        html = html.replaceAll(/(\))([a-zA-Zء-ي])/g, '$1 $2');
-        html = html.replaceAll(/([a-zA-Zء-ي])(\()/g, '$1 $2');
+        // html = html.replaceAll(/([ء-ي]+)\s(\))/g, '$1$2');
+        // html = html.replaceAll(/([a-zA-Z]+)\s(\))/g, '$1$2');
+        // html = html.replaceAll(/(\()\s([ء-ي]+)/g, '$1$2');
+        // html = html.replaceAll(/(\()\s([a-zA-Z]+)/g, '$1$2');
+        // html = html.replaceAll(/(\))([a-zA-Zء-ي])/g, '$1 $2');
+        // html = html.replaceAll(/([a-zA-Zء-ي])(\()/g, '$1 $2');
 
         // words
-        if (typeof proofreader_words === typeof []) {
-            Object.keys(proofreader_words).forEach(function (wordFull) {
-                const replacement = proofreader_words[wordFull];
-                const wordsSplitted = wordFull.split('-');
-                wordsSplitted.forEach(function (word) {
+        // if (typeof proofreader_words === typeof []) {
+        //     Object.keys(proofreader_words).forEach(function (wordFull) {
+        //         const replacement = proofreader_words[wordFull];
+        //         const wordsSplitted = wordFull.split('-');
+        //         wordsSplitted.forEach(function (word) {
 
-                    word = word.trim().replace(/([()])/g, '\\$1');
-                    const regex = new RegExp(`([\\s\\و]|^)${word}([\\،\\s\\.\\,\\:\\؛\\;\\"\\(\\)\\'\\?\\!]|$)`, 'g');
+        //             word = word.trim().replace(/([()])/g, '\\$1');
+        //             const regex = new RegExp(`([\\s\\و]|^)${word}([\\،\\s\\.\\,\\:\\؛\\;\\"\\(\\)\\'\\?\\!]|$)`, 'g');
                     
-                    html = html.replaceAll(regex, `$1${replacement}$2`);
+        //             html = html.replaceAll(regex, `$1${replacement}$2`);
 
-                });
-            });
-        } else alert('No words found');
+        //         });
+        //     });
+        // } else alert('No words found');
 
         // double quotes
-        if (html.length) {
-            let quotesCount = 0;
-            let newHtml = html.split('');
-            newHtml.forEach(function (char, index) {
-                if (char === '"') {
-                    quotesCount += 1;
-                    switch ( quotesCount % 2 ) {
-                        case 0:
-                            if (html[index - 1] === ' ') newHtml[index - 1] = '';
-                            if (html[index + 1] !== ' ' && typeof html[index + 1] !== typeof undefined && html[index + 1] !== '.' && html[index + 1] !== ',' && html[index + 1] !== '،' && html[index + 1] !== ':' && html[index + 1] !== ';') newHtml[index + 1] = ' '+newHtml[index + 1];
-                            if (html[index + 1] === ' ' && typeof html[index + 2] !== typeof undefined && (html[index + 2] === '.' || html[index + 2] === ',' || html[index + 2] === '،' || html[index + 2] === ':' || html[index + 2] === ';')) newHtml[index + 1] = '';
-                            break;
-                        case 1:
-                            if (typeof html[index - 1] !== typeof undefined && html[index - 1] !== ' ' && html[index - 1] !== 'و' && html[index - 1] !== 'ـ') newHtml[index - 1] = newHtml[index - 1]+' ';
-                            if (html[index + 1] === ' ') newHtml[index + 1] = '';
-                    }
-                }
-            });
-            html = newHtml.join('');
-        }
+        // if (html.length) {
+        //     let quotesCount = 0;
+        //     let newHtml = html.split('');
+        //     newHtml.forEach(function (char, index) {
+        //         if (char === '"') {
+        //             quotesCount += 1;
+        //             switch ( quotesCount % 2 ) {
+        //                 case 0:
+        //                     if (html[index - 1] === ' ') newHtml[index - 1] = '';
+        //                     if (html[index + 1] !== ' ' && typeof html[index + 1] !== typeof undefined && html[index + 1] !== '.' && html[index + 1] !== ',' && html[index + 1] !== '،' && html[index + 1] !== ':' && html[index + 1] !== ';') newHtml[index + 1] = ' '+newHtml[index + 1];
+        //                     if (html[index + 1] === ' ' && typeof html[index + 2] !== typeof undefined && (html[index + 2] === '.' || html[index + 2] === ',' || html[index + 2] === '،' || html[index + 2] === ':' || html[index + 2] === ';')) newHtml[index + 1] = '';
+        //                     break;
+        //                 case 1:
+        //                     if (typeof html[index - 1] !== typeof undefined && html[index - 1] !== ' ' && html[index - 1] !== 'و' && html[index - 1] !== 'ـ') newHtml[index - 1] = newHtml[index - 1]+' ';
+        //                     if (html[index + 1] === ' ') newHtml[index + 1] = '';
+        //             }
+        //         }
+        //     });
+        //     html = newHtml.join('');
+        // }
 
+        // return x;
         return html;
 
     }
