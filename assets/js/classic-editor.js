@@ -18,13 +18,8 @@ jQuery(($) => {
         // html = html.replaceAll(/\.+$/g, '.');
         // html = html.replaceAll(/(\s\و)\s/g, '$1');
         // html = html.replaceAll(/([\،\,\.\؛\;\:\:])([a-zA-Zء-ي]+)/g, '$1 $2');
-
-        const m = [...html.matchAll(/([a-zA-Zء-ي]+)\s([\،\,\.\؛\;\:\:])/g)];
-        m.forEach(function (match) {
-            const matchCase = match[0];
-            html = html.replace(matchCase, `<span class="proofreader-match">${matchCase}</span>`);
-            console.log(matchCase);
-        });
+        
+        
 
         // html = html.replaceAll(/([a-zA-Zء-ي]+)\s([\،\,\.\؛\;\:\:])/g, '$1$2');
 
@@ -79,12 +74,44 @@ jQuery(($) => {
 
     }
 
+    const prrofreader_mark_errors = (html) => {
+
+        if (!html) return '';
+
+        html = html.replaceAll('<proofreader-mark style="background-color: #ffe2e2; border-bottom: 4px solid#ff1919;">', '');
+        html = html.replaceAll('</proofreader-mark>', '');
+        const m = [
+            ...html.matchAll(/([a-zA-Zء-ي]+)\s([\،\,\.\؛\;\:\:])/g),
+        ];
+        m.forEach(function (match) {
+            const matchCase = match[0];
+            html = html.replace(matchCase, `<proofreader-mark style="background-color: #ffe2e2; border-bottom: 4px solid#ff1919;">${matchCase}</proofreader-mark>`);
+        });
+
+        return html;
+
+    }
+
     tinymce.PluginManager.add('proofreader_mce_button', function (editor, url) {
+        
+        // setInterval()
         console.log(editor);
+        editor.on('input', function (e) {
+            // const contentBodyBase = editor.getBody();
+            // $(contentBodyBase).find('#cursor').remove();
+            // const contentBody = editor.getBody();
+            // editor.execCommand('mceInsertContent', false, `<span id=\"cursor\"/>`);
+            // $(contentBody).html(prrofreader_mark_errors($(contentBody).html()));
+            // editor.selection.select(editor.dom.select('#cursor')[0]);
+            editor.selection.select(editor.dom.select('o')[0]);
+        });
+        
         editor.addButton('proofreader_mce_button', {
             onclick: function () {
 
                 const contentBody = editor.getBody();
+
+                // $(contentBody).html(prrofreader_mark_errors($(contentBody).html()));
 
                 $(contentBody).html(
                     $(contentBody).html().replaceAll(/<br>\\*/g, "</p><p>").replaceAll('&nbsp;', '')
