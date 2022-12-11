@@ -9,10 +9,40 @@ jQuery(($) => {
 
         if (!html) return '';
 
+        // strip tags
+        html = html.replace(/(<([^>]+)>)/gi, "");
+
+        // add dots
         if ( dots ) {
-            html = html.replaceAll(/(.{50,}[^\.])/g, '$1.');
+            if ( html.length > 50 && html[html.length-1] !== '.') {
+                html = `${html}.`;
+            }
         }
 
+        // remove ـ
+        html = html.replaceAll('ـ', '');
+
+        // replace arabic numbers
+        [
+            {'٠': '0'},
+            {'١': '1'},
+            {'٢': '2'},
+            {'٣': '3'},
+            {'٤': '4'},
+            {'٥': '5'},
+            {'٦': '6'},
+            {'٧': '7'},
+            {'٨': '8'},
+            {'٩': '9'},
+            {'٪': '%'},
+        ].forEach(function (obj) {
+            Object.keys(obj).forEach(function (key) {
+                const value = obj[key];
+                html = html.replaceAll(key, value);
+            });
+        });
+        
+        
         html = html.replaceAll(/\.+$/g, '.');
         html = html.replaceAll(/(\s\و)\s/g, '$1');
         html = html.replaceAll(/([\،\,\.\؛\;\:\:])([a-zA-Zء-ي]+)/g, '$1 $2');
@@ -25,23 +55,31 @@ jQuery(($) => {
         html = html.replaceAll(/(\()\s([a-zA-Z]+)/g, '$1$2');
         html = html.replaceAll(/(\))([a-zA-Zء-ي])/g, '$1 $2');
         html = html.replaceAll(/([a-zA-Zء-ي])(\()/g, '$1 $2');
-
+        
         // words
         if (typeof proofreader_words === typeof []) {
             Object.keys(proofreader_words).forEach(function (wordFull) {
                 const replacement = proofreader_words[wordFull];
                 const wordsSplitted = wordFull.split('-');
                 wordsSplitted.forEach(function (word) {
-
+                    
                     word = word.trim().replace(/([()])/g, '\\$1');
                     const regex = new RegExp(`([\\s\\و]|^)${word}([\\،\\s\\.\\,\\:\\؛\\;\\"\\(\\)\\'\\?\\!]|$)`, 'g');
                     
                     html = html.replaceAll(regex, `$1${replacement}$2`);
-
+                    
                 });
             });
         } else alert('No words found');
 
+        [
+            'شبكة 964',
+            'لشبكة 964',
+        ].forEach(function (word) {
+            const regex = new RegExp(`([\\s\\و]|^)${word}([\\،\\s\\.\\,\\:\\؛\\;\\"\\(\\)\\'\\?\\!]|$)`, 'g');
+            html = html.replaceAll(regex, `$1<strong>${word}</strong>$2`);
+        });
+        
         // double quotes
         if (html.length) {
             let quotesCount = 0;
