@@ -18,8 +18,8 @@ jQuery(($) => {
         // html = html.replaceAll(/\.+$/g, '.');
         // html = html.replaceAll(/(\s\و)\s/g, '$1');
         // html = html.replaceAll(/([\،\,\.\؛\;\:\:])([a-zA-Zء-ي]+)/g, '$1 $2');
-        
-        
+
+
 
         // html = html.replaceAll(/([a-zA-Zء-ي]+)\s([\،\,\.\؛\;\:\:])/g, '$1$2');
 
@@ -40,7 +40,7 @@ jQuery(($) => {
 
         //             word = word.trim().replace(/([()])/g, '\\$1');
         //             const regex = new RegExp(`([\\s\\و]|^)${word}([\\،\\s\\.\\,\\:\\؛\\;\\"\\(\\)\\'\\?\\!]|$)`, 'g');
-                    
+
         //             html = html.replaceAll(regex, `$1${replacement}$2`);
 
         //         });
@@ -93,19 +93,30 @@ jQuery(($) => {
     }
 
     tinymce.PluginManager.add('proofreader_mce_button', function (editor, url) {
-        
+
         // setInterval()
         console.log(editor);
         editor.on('input', function (e) {
             // const contentBodyBase = editor.getBody();
             // $(contentBodyBase).find('#cursor').remove();
-            // const contentBody = editor.getBody();
             // editor.execCommand('mceInsertContent', false, `<span id=\"cursor\"/>`);
-            // $(contentBody).html(prrofreader_mark_errors($(contentBody).html()));
-            // editor.selection.select(editor.dom.select('#cursor')[0]);
-            editor.selection.select(editor.dom.select('o')[0]);
+            $(editor.getBody()).find('[cursor]').removeAttr('cursor');
+            $(editor.selection.getNode()).attr('cursor', '');
+            // console.log(editor.selection.getNode());
+            // const rng = editor.selection.getRng().startOffset;
+            const originalRange = jQuery.extend(true, {}, editor.selection.getRng());
+            const contentBody = editor.getBody();
+            $(contentBody).html(prrofreader_mark_errors($(contentBody).html()));
+            // editor.selection.setCursorLocation($('[cursor]')[0], editor.selection.getRng().startOffset);
+            // console.log($(editor.getBody()).find('[cursor]')[0]);
+            editor.selection.select($(editor.getBody()).find('[cursor]')[0]);
+            editor.selection.collapse(false);
+            editor.excuteCommand('mceInsertContent', false, `<span id=\"cursor\"/>`);
+
+            // editor.selection.setCursorLocation($(editor.getBody()).find('[cursor]')[0], rng);
+            // editor.selection.select(editor.dom.select('o')[0]);
         });
-        
+
         editor.addButton('proofreader_mce_button', {
             onclick: function () {
 
