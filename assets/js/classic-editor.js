@@ -82,6 +82,14 @@ jQuery(($) => {
         html = html.replaceAll('</proofreader-mark>', '');
         const m = [
             ...html.matchAll(/([a-zA-Zء-ي]+)\s([\،\,\.\؛\;\:\:])/g),
+            ...html.matchAll(/([\،\,\.\؛\;\:\:])([a-zA-Zء-ي]+)/g),
+            ...html.matchAll(/([ء-ي]+)\s(\))/g),
+            ...html.matchAll(/([a-zA-Z]+)\s(\))/g),
+            ...html.matchAll(/(\()\s([ء-ي]+)/g),
+            ...html.matchAll(/(\()\s([a-zA-Z]+)/g),
+            ...html.matchAll(/(\))([a-zA-Zء-ي])/g),
+            ...html.matchAll(/([a-zA-Zء-ي])(\()/g),
+            ...html.matchAll(/([a-zA-Zء-ي]+)\s([\،\,\.\؛\;\:\:])/g),
         ];
         m.forEach(function (match) {
             const matchCase = match[0];
@@ -97,24 +105,44 @@ jQuery(($) => {
         // setInterval()
         console.log(editor);
         editor.on('input', function (e) {
-            // const contentBodyBase = editor.getBody();
-            // $(contentBodyBase).find('#cursor').remove();
-            // editor.execCommand('mceInsertContent', false, `<span id=\"cursor\"/>`);
-            $(editor.getBody()).find('[cursor]').removeAttr('cursor');
-            $(editor.selection.getNode()).attr('cursor', '');
-            // console.log(editor.selection.getNode());
-            // const rng = editor.selection.getRng().startOffset;
-            const originalRange = jQuery.extend(true, {}, editor.selection.getRng());
-            const contentBody = editor.getBody();
-            $(contentBody).html(prrofreader_mark_errors($(contentBody).html()));
-            // editor.selection.setCursorLocation($('[cursor]')[0], editor.selection.getRng().startOffset);
-            // console.log($(editor.getBody()).find('[cursor]')[0]);
-            editor.selection.select($(editor.getBody()).find('[cursor]')[0]);
-            editor.selection.collapse(false);
-            editor.excuteCommand('mceInsertContent', false, `<span id=\"cursor\"/>`);
+            // // const contentBodyBase = editor.getBody();
+            // // $(contentBodyBase).find('#cursor').remove();
+            // // editor.execCommand('mceInsertContent', false, `<span id=\"cursor\"/>`);
+            // $(editor.getBody()).find('[cursor]').removeAttr('cursor');
+            // $(editor.selection.getNode()).attr('cursor', '');
+            // // console.log(editor.selection.getNode());
+            // // const rng = editor.selection.getRng().startOffset;
+            // const originalRange = jQuery.extend(true, {}, editor.selection.getRng());
+            // const contentBody = editor.getBody();
+            // $(contentBody).html(prrofreader_mark_errors($(contentBody).html()));
+            // // editor.selection.setCursorLocation($('[cursor]')[0], editor.selection.getRng().startOffset);
+            // // console.log($(editor.getBody()).find('[cursor]')[0]);
+            // editor.selection.select($(editor.getBody()).find('[cursor]')[0]);
+            // editor.selection.collapse(false);
+            // editor.excuteCommand('mceInsertContent', false, `<span id=\"cursor\"/>`);
+            
+            // // editor.selection.setCursorLocation($(editor.getBody()).find('[cursor]')[0], rng);
+            // // editor.selection.select(editor.dom.select('o')[0]);
+            
+            // editor.getContent().contains('أن').css("color","red");
 
-            // editor.selection.setCursorLocation($(editor.getBody()).find('[cursor]')[0], rng);
-            // editor.selection.select(editor.dom.select('o')[0]);
+            const node = editor.selection.getNode();
+
+            $(node).find('.mirror-node').remove();
+            
+            const proofreaderNode = $(`<p></p>`).addClass('mirror-node').css({
+                position: 'absolute',
+                PointerEvents: 'none',
+                top: `calc(${$(node).offset().top}px - 21px)`,
+                color: '#0000',
+                zIndex: '-999',
+                height: `${$(node).height()}px`,
+                display: 'block',
+            }).html(prrofreader_mark_errors($(node).html()));
+            
+            $(node).append(proofreaderNode);
+
+            
         });
 
         editor.addButton('proofreader_mce_button', {
