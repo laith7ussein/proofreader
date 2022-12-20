@@ -14,7 +14,7 @@ jQuery(($) => {
 
         // add dots
         if ( dots ) {
-            if ( html.length > 50 && html[html.length-1] !== '.') {
+            if ( html.length > 50 && html[html.length-1] !== '.' && html[html.length-1] !== ':' && html[html.length-1] !== '؟' && html[html.length-1] !== '!' && html[html.length-1] !== '،' && html[html.length-1] !== '؛' && html[html.length-1] !== '?' ) {
                 html = `${html}.`;
             }
         }
@@ -55,8 +55,9 @@ jQuery(($) => {
         
         html = html.replaceAll(/\.+$/g, '.');
         html = html.replaceAll(/(\s\و)\s/g, '$1');
-        html = html.replaceAll(/([\،\,\.\؛\;\:\:])([a-zA-Zء-ي]+)/g, '$1 $2');
-        html = html.replaceAll(/([a-zA-Zء-ي]+)\s([\،\,\.\؛\;\:\:])/g, '$1$2');
+        html = html.replaceAll(/([^0-9])([\،\,\.\؛\;\:\:])([!@#$%^&*()-_=+0-9a-zA-Zء-ي0]+)/g, '$1$2 $3');
+        html = html.replaceAll(/([0-9])([a-zA-Zء-ي])/g, '$1 $2');
+        html = html.replaceAll(/([!@#$%^&*()-_=+0-9a-zA-Zء-ي0]+)\s([\،\,\.\؛\;\:\:])/g, '$1$2');
 
         // pranthesis
         html = html.replaceAll(/([ء-ي]+)\s(\))/g, '$1$2');
