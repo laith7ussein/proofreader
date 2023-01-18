@@ -128,26 +128,26 @@ jQuery(($) => {
     tinymce.PluginManager.add('proofreader_mce_button', function (editor, url) {
 
         // on paste
-        editor.on('PastePreProcess', function (e) {
-            // get plain text from clipboard
-            let text = e.content;
+        // editor.on('PastePreProcess', function (e) {
+        //     // get plain text from clipboard
+        //     let text = e.content;
 
-            // remove span, a, strong and em tags
-            text = text.replace(/<(span|a|strong|em)[^>]*>/g, '');
-            text = text.replace(/<\/(span|a|strong|em)>/g, '');
+        //     // remove span, a, strong and em tags
+        //     text = text.replace(/<(span|a|strong|em)[^>]*>/g, '');
+        //     text = text.replace(/<\/(span|a|strong|em)>/g, '');
 
-            text = text.replace(/(<([^>]+)>)/ig, '<br>');
+        //     text = text.replace(/(<([^>]+)>)/ig, '<br>');
 
-            // remove multiple <br>
-            text = text.replace(/(<br>\\*)+/g, '<br>');
+        //     // remove multiple <br>
+        //     text = text.replace(/(<br>\\*)+/g, '<br>');
 
-            // convert <br> to <p>
-            text = text.replace(/<br>/g, '</p><p>');
+        //     // convert <br> to <p>
+        //     text = text.replace(/<br>/g, '</p><p>');
 
-            e.content = text;
-            e.content = '';
+        //     e.content = text;
+        //     e.content = '';
 
-        });
+        // });
 
 
         editor.addButton('proofreader_mce_button', {
