@@ -122,11 +122,13 @@ jQuery(($) => {
         editor.addButton('proofreader_mce_button', {
             onclick: function () {
 
-                const contentBody = editor.getBody();
+                let contentBody = editor.getBody();
 
                 $(contentBody).html(
                     $(contentBody).html().replaceAll(/<br>\\*/g, "</p><p>").replaceAll('&nbsp;', '')
                 );
+
+                contentBody = editor.getBody();
 
                 $(contentBody).find('p, li, h1, h2, h3, h4, h5, h6, strong, b, span').each(function (index, element) {
                     const $element = $(element);
@@ -138,7 +140,7 @@ jQuery(($) => {
 
                         $element.html(
                             prrofreaderFn(
-                                $element.html()
+                                $.trim($element.html())
                             )
                         );
 
@@ -160,7 +162,7 @@ jQuery(($) => {
                 $(contentBody).find('p').filter(function () {
                     return $(this).text().length < 50
                 }).replaceWith(function () {
-                    return `<h4>${this.innerHTML}</h4>`;
+                    return `<h2>${this.innerHTML}</h2>`;
                 });
 
             },
